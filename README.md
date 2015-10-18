@@ -75,7 +75,7 @@ String v2 = ak.get(m2);
 
 ### Shapes
 
-ShapeMaps work best if given the whole set of potential keys they might be expected to hold up front. They make up the
+ShapeMaps work best if they are given the whole set of their potential keys up front. They make up the
 map's `shape`. A shape reserves space in the underlying storage for its keys. Think of a shape as a potential key set.
 
 When working with ShapeMaps you do not interact with shapes directly. Shapes are transparently maintained as an implementation
