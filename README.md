@@ -13,7 +13,7 @@ ShapeMaps implement a combination of the following performance optimization tech
 
  * [Interned symbols](https://en.wikipedia.org/wiki/String_interning) as keys. Your keys must have a string representation.
  * [Perfect hashing](https://en.wikipedia.org/wiki/Perfect_hash_function) for collision-free storage.
- * [Polymorphic Inline Caching](https://en.wikipedia.org/wiki/Inline_caching) provides the ability to access a set of keys
+ * Uses ideas behind [Polymorphic Inline Caching](https://en.wikipedia.org/wiki/Inline_caching) to provide the ability to access a set of keys
     many times, without paying the potential collision resolution cost each time.
 
 These techniques are particularly effective if:
