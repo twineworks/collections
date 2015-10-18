@@ -129,7 +129,7 @@ Please note that the order in which keys are added is important:
 
 ## Benchmarks
 
-The [benchmarks](benchmarks) folder contains a basic JMH micro-benchmark project. The benchmarks build maps of various sizes and perform basic read and write operations. In case of the ShapeMap the benchmarks also read/write using an effective accessor, as well as an entirely ineffective one, which has been trained on four shapes irrelevant to the benchmarked map and needs to fall back on generic lookup.
+The [benchmarks](benchmarks) folder contains a basic [JMH](http://openjdk.java.net/projects/code-tools/jmh/) micro-benchmark project. The benchmarks build maps of various sizes and perform basic read and write operations. In case of the ShapeMap the benchmarks also read/write using an effective accessor, as well as an entirely ineffective one, which has been trained on four shapes irrelevant to the benchmarked map and needs to fall back on generic lookup.
 
 Here's the basic result for all benchmarks against the JDK 8 HashMap, measuring access time for reading/writing a single key in ns,  so lower is better.
 
