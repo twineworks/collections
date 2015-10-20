@@ -23,7 +23,7 @@ THE SOFTWARE.
 */
 
 
-package io.twineworks.collections.shapemap;
+package com.twineworks.collections.shapemap;
 
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;

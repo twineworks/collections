@@ -1,4 +1,4 @@
-package io.twineworks.collections.shapemap;
+package com.twineworks.collections.shapemap;
 
 /*
   Adapted version of guava MapInterfaceTest

@@ -1,4 +1,4 @@
-package io.twineworks.collections.shapemap;
+package com.twineworks.collections.shapemap;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
@@ -6,8 +6,6 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 @State(Scope.Thread)
 public class MediumMapBenchmark {

@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package io.twineworks.collections.shapemap;
+package com.twineworks.collections.shapemap;
 
 import java.util.Set;
 

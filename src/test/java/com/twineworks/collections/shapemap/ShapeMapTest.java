@@ -1,4 +1,4 @@
-package io.twineworks.collections.shapemap;
+package com.twineworks.collections.shapemap;
 
 import org.junit.Test;
 
