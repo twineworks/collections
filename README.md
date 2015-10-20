@@ -13,7 +13,7 @@ ShapeMaps implement a combination of the following performance optimization tech
 
  * [Interned symbols](https://en.wikipedia.org/wiki/String_interning) as keys. Your keys must have a string representation.
  * [Perfect hashing](https://en.wikipedia.org/wiki/Perfect_hash_function) for collision-free storage.
- * [Polymorphic Inline Caching](https://en.wikipedia.org/wiki/Inline_caching) provides the ability to access a set of keys
+ * Uses ideas behind [Polymorphic Inline Caching](https://en.wikipedia.org/wiki/Inline_caching) to provide the ability to access a set of keys
     many times, without paying the potential collision resolution cost each time.
 
 These techniques are particularly effective if:
@@ -75,7 +75,7 @@ String v2 = ak.get(m2);
 
 ### Shapes
 
-ShapeMaps work best if given the whole set of potential keys they might be expected to hold up front. They make up the
+ShapeMaps work best if they are given the whole set of their potential keys up front. They make up the
 map's `shape`. A shape reserves space in the underlying storage for its keys. Think of a shape as a potential key set.
 
 When working with ShapeMaps you do not interact with shapes directly. Shapes are transparently maintained as an implementation
@@ -129,6 +129,8 @@ Please note that the order in which keys are added is important:
 
 ## Benchmarks
 
-The benchmark sub-project contains basic JMH micro-benchmarks. The benchmarks build maps of various sizes and perform basic read and write operations. In case of the ShapeMap the benchmarks also read/write using an effective accessor, as well as an entirely ineffective one, which has been trained on four shapes irrelevant to the benchmarked map and needs to fall back on generic lookup.
+The [benchmarks](benchmarks) folder contains a basic [JMH](http://openjdk.java.net/projects/code-tools/jmh/) micro-benchmark project. The benchmarks build maps of various sizes and perform basic read and write operations. In case of the ShapeMap the benchmarks also read/write using an effective accessor, as well as an entirely ineffective one, which has been trained on four shapes irrelevant to the benchmarked map and needs to fall back on generic lookup.
 
 Here's the basic result for all benchmarks against the JDK 8 HashMap, measuring access time for reading/writing a single key in ns,  so lower is better.
+
+![BenchmarkResults](benchmarks/images/performance_chart.png)

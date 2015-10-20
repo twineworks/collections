@@ -77,4 +77,4 @@ java -jar target/benchmarks.jar -wi 10 -i 10 -f 1 -bm avgt -tu ns -rf json
 
 ```
 
-You may want to grab the jmh-result.json file the benchmark creates and put it into [JMH-charts](http://nilskp.github.io/jmh-charts/) which will visualize the result.
+You may want to grab the [jmh-result.json](jmh-result.json) file the benchmark creates and put it into [JMH-charts](http://nilskp.github.io/jmh-charts/) which will visualize the result.
