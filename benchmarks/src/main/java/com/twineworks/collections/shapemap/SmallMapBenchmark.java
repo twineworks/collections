@@ -42,43 +42,60 @@ public class SmallMapBenchmark {
   }
 
   @Benchmark
-  public String readHashMap() {
+  public String hashMap_get() {
     return hashMap.get("k0");
   }
 
   @Benchmark
-  public String readShapeMap(){
+  public String shapeMap_get(){
     return shapeMap.get(k0);
   }
 
   @Benchmark
-  public String readShapeMapAccessor(){
+  public String accessor_get(){
     return a1.get(shapeMap);
   }
 
   @Benchmark
-  public String readShapeMapAccessorFallback(){
-    return fa.get(shapeMap);
+  public String shapeMap_geta(){
+    return a1.get(shapeMap);
   }
 
   @Benchmark
-  public String putHashMap() {
+  public String fallback_accessor_get(){
+    return fa.get(shapeMap);
+  }
+
+
+  @Benchmark
+  public String hashMap_put() {
     return hashMap.put("k0", "vn1");
   }
 
   @Benchmark
-  public String putShapeMap(){
+  public String shapeMap_put(){
     return shapeMap.put(k0, "vn1");
   }
 
   @Benchmark
-  public String putShapeMapAccessor(){
+  public String acessor_put(){
     return a1.put(shapeMap, "vn1");
   }
 
   @Benchmark
-  public Object putShapeMapAccessorSetOnly(){
+  public String shapeMap_puta(){
+    return shapeMap.puta(a1, "vn1");
+  }
+
+  @Benchmark
+  public Object accessor_set(){
     a1.set(shapeMap, "vn1");
+    return a1;
+  }
+
+  @Benchmark
+  public Object shapeMap_seta(){
+    shapeMap.seta(a1, "vn1");
     return a1;
   }
 

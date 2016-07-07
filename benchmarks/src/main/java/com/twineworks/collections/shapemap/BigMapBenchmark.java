@@ -49,45 +49,62 @@ public class BigMapBenchmark {
   }
 
   @Benchmark
-  public String readHashMap() {
+  public String hashMap_get() {
     return hashMap.get("k123456");
   }
 
   @Benchmark
-  public String readShapeMap(){
+  public String shapeMap_get(){
     return shapeMap.get(k);
   }
 
   @Benchmark
-  public String readShapeMapAccessor(){
+  public String accessor_get(){
     return a.get(shapeMap);
   }
 
   @Benchmark
-  public String readShapeMapAccessorFallback(){
-    return fa.get(shapeMap);
+  public String shapeMap_geta(){
+    return a.get(shapeMap);
   }
 
   @Benchmark
-  public String putHashMap() {
+  public String fallback_accessor_get(){
+    return fa.get(shapeMap);
+  }
+
+
+  @Benchmark
+  public String hashMap_put() {
     return hashMap.put("k123456", "vn1");
   }
 
   @Benchmark
-  public String putShapeMap(){
+  public String shapeMap_put(){
     return shapeMap.put(k, "vn1");
   }
 
   @Benchmark
-  public String putShapeMapAccessor(){
+  public String acessor_put(){
     return a.put(shapeMap, "vn1");
   }
 
   @Benchmark
-  public Object putShapeMapAccessorSetOnly(){
+  public String shapeMap_puta(){
+    return shapeMap.puta(a, "vn1");
+  }
+
+  @Benchmark
+  public Object accessor_set(){
     a.set(shapeMap, "vn1");
     return a;
   }
-  
+
+  @Benchmark
+  public Object shapeMap_seta(){
+    shapeMap.seta(a, "vn1");
+    return a;
+  }
+
 }
 

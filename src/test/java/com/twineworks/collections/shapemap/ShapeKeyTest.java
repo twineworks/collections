@@ -24,8 +24,20 @@ public class ShapeKeyTest {
   }
 
   @Test
-  public void get_all_provides_a_set_of_keys() throws Exception {
+  public void get_all_provides_a_set_of_keys_for_strings() throws Exception {
     Set<ShapeKey> keys = ShapeKey.getAll("foo", "bar", "baz");
+    assertThat(keys).isNotNull();
+    assertThat(keys.size()).isEqualTo(3);
+    assertThat(keys).contains(
+      ShapeKey.get("foo"),
+      ShapeKey.get("bar"),
+      ShapeKey.get("baz")
+    );
+  }
+
+  @Test
+  public void get_all_provides_a_set_of_keys_for_keys() throws Exception {
+    Set<ShapeKey> keys = ShapeKey.getAll(ShapeKey.get("foo"), ShapeKey.get("bar"), ShapeKey.get("baz"));
     assertThat(keys).isNotNull();
     assertThat(keys.size()).isEqualTo(3);
     assertThat(keys).contains(

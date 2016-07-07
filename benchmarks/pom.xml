@@ -34,7 +34,7 @@ THE POSSIBILITY OF SUCH DAMAGE.
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.twineworks</groupId>
+    <groupId>com.twineworks</groupId>
     <version>0.0.1-SNAPSHOT</version>
     <artifactId>collections-benchmarks</artifactId>
     <packaging>jar</packaging>

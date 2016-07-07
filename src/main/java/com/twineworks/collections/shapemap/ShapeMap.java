@@ -27,24 +27,34 @@ package com.twineworks.collections.shapemap;
 
 import java.util.*;
 
-public class ShapeMap<T> implements Map<ShapeKey, T> {
+public class ShapeMap<T> implements Map<ShapeKey, T>, Cloneable {
 
   public Shape shape;
   public Object[] storage = null;
-  public final Set<ShapeKey> keys = new HashSet<>();
+  public final HashSet<ShapeKey> keys;
 
   public ShapeMap(){
+    keys = new HashSet<>();
     shape = Shapes.forKeySet(Collections.<ShapeKey>emptySet());
     shape.init(this);
   }
 
+  @SuppressWarnings("unchecked")
+  public ShapeMap(ShapeMap input){
+    shape = input.shape;
+    storage = Arrays.copyOf(input.storage, input.storage.length);
+    keys = (HashSet<ShapeKey>) input.keys.clone();
+  }
+
   public ShapeMap(Set<ShapeKey> keys){
     shape = Shapes.forKeySet(keys);
+    this.keys = new HashSet<>();
     this.keys.addAll(keys);
     shape.init(this);
   }
 
   public ShapeMap(Map<String, ? extends T> map){
+    this.keys = new HashSet<>();
     Set<String> strKeys = map.keySet();
     for (String strKey : strKeys) {
       this.keys.add(ShapeKey.get(strKey));
@@ -60,16 +70,68 @@ public class ShapeMap<T> implements Map<ShapeKey, T> {
   }
 
   public ShapeMap(ShapeKey... keys){
-
+    this.keys = new HashSet<>();
     Collections.addAll(this.keys, keys);
 
     shape = Shapes.forKeySet(this.keys);
     shape.init(this);
   }
 
+  // convenience constructor useful for tests
+  // expects k1, T1, k2, T2, etc.. arguments
+  // clazz argument is used to cast the Tns ensuring
+  // compile-time type safety
+  public ShapeMap(Class<T> clazz, Object ... keysAndValues){
+
+    if (keysAndValues.length % 2 != 0){
+      throw new IllegalArgumentException("cannot initialize map: keys and values must come in pairs");
+    }
+
+    ArrayList<ShapeKey> keys = new ArrayList<>();
+    ArrayList<T> values = new ArrayList<>();
+
+    for (int i = 0; i < keysAndValues.length; i+=2) {
+      Object oKey = keysAndValues[i];
+      Object oVal = keysAndValues[i + 1];
+
+      // turn key to shapeKey
+      if (oKey == null) {
+        throw new NullPointerException("Keys cannot be null");
+      }
+
+      ShapeKey k;
+      if (oKey instanceof ShapeKey) {
+        k = (ShapeKey) oKey;
+      } else {
+        k = ShapeKey.get(oKey.toString());
+      }
+
+      keys.add(k);
+      values.add(clazz.cast(oVal));
+
+    }
+
+    this.keys = new HashSet<>(keys);
+
+    shape = Shapes.forKeySet(this.keys);
+    shape.init(this);
+
+    for (int i = 0; i < keys.size(); i++) {
+      ShapeKey key = keys.get(i);
+      storage[shape.idxFor(key)] = values.get(i);
+    }
+
+  }
+
   public static <V> ShapeMap.Accessor<V> accessor(ShapeKey k){
     Objects.requireNonNull(k);
     return new PolymorphicAccessor<>(k);
+  }
+
+  // convenience method
+  public static <V> ShapeMap.Accessor<V> accessor(String k){
+    Objects.requireNonNull(k);
+    return new PolymorphicAccessor<>(ShapeKey.get(k));
   }
 
   @Override
@@ -85,6 +147,12 @@ public class ShapeMap<T> implements Map<ShapeKey, T> {
   @Override
   public boolean containsKey(Object key) {
     return key instanceof ShapeKey && keys.contains(key);
+  }
+
+  // convenience method when performance is not important
+  // converts given key to ShapeKey and calls containsKey
+  public boolean containsStrKey(String key) {
+    return containsKey(ShapeKey.get(key));
   }
 
   @Override
@@ -105,6 +173,31 @@ public class ShapeMap<T> implements Map<ShapeKey, T> {
   public T get(Object key) {
     return (T) storage[shape.idxFor((ShapeKey)key)];
   }
+
+  // convenience method if performance is not an issue
+  // converts given key to ShapeKey and calls get
+  public T gets(String key){
+    return get(ShapeKey.get(key));
+  }
+
+  // convenience method to
+  // allow code in the shape of map.geta(accessor) instead of accessor.get(map)
+  public T geta(ShapeMap.Accessor<T> accessor){
+    return accessor.get(this);
+  }
+
+  // convenience method to
+  // allow code in the shape of map.puta(accessor, value) instead of accessor.put(map, value)
+  public T puta(ShapeMap.Accessor<T> accessor, T value){
+    return accessor.put(this, value);
+  }
+
+  // convenience method to
+  // allow code in the shape of map.seta(accessor, value) instead of accessor.set(map, value)
+  public void seta(ShapeMap.Accessor<T> accessor, T value){
+    accessor.set(this, value);
+  }
+
 
   @Override
   @SuppressWarnings("unchecked")
@@ -129,6 +222,12 @@ public class ShapeMap<T> implements Map<ShapeKey, T> {
 
   }
 
+  // convenience method if performance is not an issue
+  // converts given key to ShapeKey and calls put
+  public T puts(String key, T value){
+    return put(ShapeKey.get(key), value);
+  }
+
   @Override
   @SuppressWarnings("unchecked")
   public T remove(Object key) {
@@ -144,6 +243,36 @@ public class ShapeMap<T> implements Map<ShapeKey, T> {
 
     return null;
 
+  }
+  // a version of put that does not return the previous value
+  @SuppressWarnings("unchecked")
+  public void set(ShapeKey key, T value) {
+
+    Objects.requireNonNull(key);
+
+    int idx = shape.idxFor(key);
+    if (idx > 0){
+      storage[idx] = value;
+    }
+    else{
+      shape = Shapes.extendBy(shape, key);
+      shape.ensureCapacity(this);
+      keys.add(key);
+      idx = shape.idxFor(key);
+      storage[idx] = value;
+    }
+
+  }
+
+  // convenience method if performance is not an issue
+  // converts given key to ShapeKey and calls set
+  public void sets(String key, T value){
+    set(ShapeKey.get(key), value);
+  }
+  // convenience method if performance is not an issue
+  // converts given key to ShapeKey and calls remove
+  public T removes(String key){
+    return remove(ShapeKey.get(key));
   }
 
   private void clearKeyData(ShapeKey k){
@@ -245,7 +374,6 @@ public class ShapeMap<T> implements Map<ShapeKey, T> {
 
   @Override
   public Collection<T> values() {
-
     return new AbstractCollection<T>() {
 
       @Override
@@ -462,7 +590,7 @@ public class ShapeMap<T> implements Map<ShapeKey, T> {
     return h;
   }
 
-  public static interface Accessor<T> {
+  public interface Accessor<T> {
     T get(ShapeMap<? extends T> shapeMap);
     T put(ShapeMap<? super T> shapeMap, T v);
     void set(ShapeMap<? super T> shapeMap, T v);

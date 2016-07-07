@@ -16,14 +16,61 @@ public class ShapeMapTest {
   private static ShapeKey c = ShapeKey.get("c");
   private static ShapeKey d = ShapeKey.get("d");
 
+  @Test
+  public void put_via_string() throws Exception {
+    ShapeMap<String> m = new ShapeMap<>();
+    m.puts("a", "prev");
+    String prev = m.puts("a", "foo");
+    assertThat(prev).isEqualTo("prev");
+    assertThat(m.get(a)).isEqualTo("foo");
+    assertThat(m.gets("a")).isEqualTo("foo");
+    assertThat(m.get(b)).isNull();
+  }
+
+  @Test
+  public void put_via_accessor() throws Exception {
+    ShapeMap<String> m = new ShapeMap<>();
+    ShapeMap.Accessor<String> a_a = ShapeMap.accessor(a);
+    m.puta(a_a, "prev");
+    String prev = m.puta(a_a, "foo");
+    assertThat(prev).isEqualTo("prev");
+    assertThat(m.get(a)).isEqualTo("foo");
+    assertThat(m.gets("a")).isEqualTo("foo");
+    assertThat(m.get(b)).isNull();
+  }
+
+  @Test
+  public void set_via_string() throws Exception {
+    ShapeMap<String> m = new ShapeMap<>();
+    m.sets("a", "foo");
+    assertThat(m.get(a)).isEqualTo("foo");
+    assertThat(m.gets("a")).isEqualTo("foo");
+    assertThat(m.get(b)).isNull();
+  }
+
+  @Test
+  public void set_via_accessor() throws Exception {
+    ShapeMap<String> m = new ShapeMap<>();
+    ShapeMap.Accessor<String> a_a = ShapeMap.accessor(a);
+    m.seta(a_a, "foo");
+    assertThat(m.get(a)).isEqualTo("foo");
+    assertThat(m.gets("a")).isEqualTo("foo");
+    assertThat(m.get(b)).isNull();
+  }
+
+  @Test
+  public void remove_via_string() throws Exception {
+    ShapeMap<String> m = new ShapeMap<>();
+    m.put(a, "foo");
+    m.removes("a");
+    assertThat(m.get(a)).isNull();
+  }
 
   @Test
   public void get_miss() throws Exception {
-
     ShapeMap.Accessor<String> a_a = ShapeMap.accessor(a);
     ShapeMap<String> m = new ShapeMap<>();
     assertThat(a_a.get(m)).isNull();
-
   }
 
   @Test
@@ -34,6 +81,40 @@ public class ShapeMapTest {
     a_a.set(m, "foo");
     assertThat(a_a.get(m)).isEqualTo("foo");
 
+  }
+
+  @Test
+  public void get_via_string_find() throws Exception {
+
+    ShapeMap<String> m = new ShapeMap<>();
+    m.put(a, "foo");
+    assertThat(m.gets("a")).isEqualTo("foo");
+
+  }
+
+  @Test
+  public void get_via_accessor_miss() throws Exception {
+    ShapeMap<String> m = new ShapeMap<>();
+    ShapeMap.Accessor<String> a_a = ShapeMap.accessor(a);
+    assertThat(m.geta(a_a)).isNull();
+  }
+
+  @Test
+  public void get_via_accessor_find() throws Exception {
+
+    ShapeMap<String> m = new ShapeMap<>();
+    m.put(a, "foo");
+    ShapeMap.Accessor<String> a_a = ShapeMap.accessor(a);
+    assertThat(m.geta(a_a)).isEqualTo("foo");
+
+  }
+
+  @Test
+  public void contains_key_via_string() throws Exception {
+    ShapeMap<String> m = new ShapeMap<>();
+    m.put(a, "foo");
+    assertThat(m.containsStrKey("a")).isTrue();
+    assertThat(m.containsStrKey("b")).isFalse();
   }
 
   @Test
@@ -390,4 +471,21 @@ public class ShapeMapTest {
 
   }
 
+  @Test
+  public void allows_var_arg_construction() throws Exception {
+    ShapeMap<String> m = new ShapeMap<>(String.class, a, "Hello", b, "World");
+    assertThat(m.get(a)).isEqualTo("Hello");
+    assertThat(m.get(b)).isEqualTo("World");
+    assertThat(m.get(c)).isNull();
+
+  }
+
+  @Test
+  public void allows_var_arg_construction_with_string_keys() throws Exception {
+    ShapeMap<String> m = new ShapeMap<>(String.class, "a", "Hello", "b", "World");
+    assertThat(m.get(a)).isEqualTo("Hello");
+    assertThat(m.get(b)).isEqualTo("World");
+    assertThat(m.get(c)).isNull();
+
+  }
 }

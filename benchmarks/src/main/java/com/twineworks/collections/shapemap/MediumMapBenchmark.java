@@ -49,45 +49,62 @@ public class MediumMapBenchmark {
   }
 
   @Benchmark
-  public String readHashMap() {
+  public String hashMap_get() {
     return hashMap.get("k42");
   }
 
   @Benchmark
-  public String readShapeMap(){
+  public String shapeMap_get(){
     return shapeMap.get(k42);
   }
 
   @Benchmark
-  public String readShapeMapAccessor(){
+  public String accessor_get(){
     return a42.get(shapeMap);
   }
 
   @Benchmark
-  public String readShapeMapAccessorFallback(){
-    return fa.get(shapeMap);
+  public String shapeMap_geta(){
+    return a42.get(shapeMap);
   }
 
   @Benchmark
-  public String putHashMap() {
+  public String fallback_accessor_get(){
+    return fa.get(shapeMap);
+  }
+
+
+  @Benchmark
+  public String hashMap_put() {
     return hashMap.put("k42", "vn1");
   }
 
   @Benchmark
-  public String putShapeMap(){
+  public String shapeMap_put(){
     return shapeMap.put(k42, "vn1");
   }
 
   @Benchmark
-  public String putShapeMapAccessor(){
+  public String acessor_put(){
     return a42.put(shapeMap, "vn1");
   }
 
   @Benchmark
-  public Object putShapeMapAccessorSetOnly(){
+  public String shapeMap_puta(){
+    return shapeMap.puta(a42, "vn1");
+  }
+
+  @Benchmark
+  public Object accessor_set(){
     a42.set(shapeMap, "vn1");
     return a42;
   }
-  
+
+  @Benchmark
+  public Object shapeMap_seta(){
+    shapeMap.seta(a42, "vn1");
+    return 42;
+  }
+
 }
 

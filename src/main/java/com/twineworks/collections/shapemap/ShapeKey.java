@@ -85,6 +85,14 @@ public class ShapeKey {
     return keys;
   }
 
+  public static Set<ShapeKey> getAll(ShapeKey ... inputs){
+    HashSet<ShapeKey> keys = new HashSet<>(inputs.length);
+    for (ShapeKey k : inputs) {
+      keys.add(k);
+    }
+    return keys;
+  }
+
   private ShapeKey(String symbol){
     this.sym = symbol;
     this.hashCode = symbol.hashCode();

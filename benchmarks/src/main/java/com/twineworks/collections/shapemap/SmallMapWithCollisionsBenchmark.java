@@ -54,44 +54,60 @@ public class SmallMapWithCollisionsBenchmark {
   }
 
   @Benchmark
-  public String readHashMap() {
+  public String hashMap_get() {
     return hashMap.get("Ea");
   }
 
   @Benchmark
-  public String readShapeMap(){
+  public String shapeMap_get(){
     return shapeMap.get(k2);
   }
 
   @Benchmark
-  public String readShapeMapAccessor(){
+  public String accessor_get(){
     return a2.get(shapeMap);
   }
 
   @Benchmark
-  public String readShapeMapAccessorFallback(){
+  public String shapeMap_geta(){
+    return a2.get(shapeMap);
+  }
+
+  @Benchmark
+  public String fallback_accessor_get(){
     return fa.get(shapeMap);
   }
 
 
   @Benchmark
-  public String putHashMap() {
+  public String hashMap_put() {
     return hashMap.put("Ea", "vn1");
   }
 
   @Benchmark
-  public String putShapeMap(){
+  public String shapeMap_put(){
     return shapeMap.put(k2, "vn1");
   }
 
   @Benchmark
-  public String putShapeMapAccessor(){
+  public String acessor_put(){
     return a2.put(shapeMap, "vn1");
   }
 
   @Benchmark
-  public Object putShapeMapAccessorSetOnly(){
+  public String shapeMap_puta(){
+    return shapeMap.puta(a2, "vn1");
+  }
+
+  @Benchmark
+  public Object accessor_set(){
     a2.set(shapeMap, "vn1");
+    return a2;
+  }
+
+  @Benchmark
+  public Object shapeMap_seta(){
+    shapeMap.seta(a2, "vn1");
     return a2;
   }
 
