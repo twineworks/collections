@@ -2,10 +2,7 @@ package com.twineworks.collections.shapemap;
 
 import org.junit.Test;
 
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -64,6 +61,7 @@ public class ShapeMapTest {
     m.put(a, "foo");
     m.removes("a");
     assertThat(m.get(a)).isNull();
+    assertThat(m.shape.keySet()).doesNotContain(ShapeKey.get("a"));
   }
 
   @Test
@@ -396,23 +394,24 @@ public class ShapeMapTest {
   }
 
   @Test
-  public void removing_mapping_by_entry_set_iterator_remove_nulls_storage() throws Exception {
+  public void removing_mapping_by_entry_set_iterator_remove_nulls_storage_and_shrinks_shape() throws Exception {
 
     ShapeMap<String> m = new ShapeMap<>();
     m.put(a, "foo");
     int idx = m.shape.idxFor(a);
     assertThat(m.storage[idx]).isEqualTo("foo");
 
-    // remove, verify storage is null
+    // remove, verify storage is null and shape is smaller
     Iterator<Map.Entry<ShapeKey, String>> iterator = m.entrySet().iterator();
     iterator.next();
     iterator.remove();
     assertThat(m.storage[idx]).isNull();
+    assertThat(m.shape.keySet()).doesNotContain(a);
 
   }
 
   @Test
-  public void removing_mapping_by_value_collection_remove_nulls_storage() throws Exception {
+  public void removing_mapping_by_value_collection_remove_nulls_storage_and_shrinks_shape() throws Exception {
 
     ShapeMap<String> m = new ShapeMap<>();
     m.put(a, "foo");
@@ -422,11 +421,12 @@ public class ShapeMapTest {
     // remove, verify storage is null
     m.values().remove("foo");
     assertThat(m.storage[idx]).isNull();
+    assertThat(m.shape.keySet()).doesNotContain(a);
 
   }
 
   @Test
-  public void removing_mapping_by_value_collection_iterator_remove_nulls_storage() throws Exception {
+  public void removing_mapping_by_value_collection_iterator_remove_nulls_storage_and_shrinks_shape() throws Exception {
 
     ShapeMap<String> m = new ShapeMap<>();
     m.put(a, "foo");
@@ -438,11 +438,12 @@ public class ShapeMapTest {
     iterator.next();
     iterator.remove();
     assertThat(m.storage[idx]).isNull();
+    assertThat(m.shape.keySet()).doesNotContain(a);
 
   }
 
   @Test
-  public void clear_nulls_storage() throws Exception {
+  public void clear_nulls_storage_and_shrinks_shape() throws Exception {
 
     ShapeMap<String> m = new ShapeMap<>();
     m.put(a, "foo");
@@ -452,6 +453,7 @@ public class ShapeMapTest {
     // clear, verify storage is null
     m.clear();
     assertThat(m.storage[idx]).isNull();
+    assertThat(m.shape.keySet()).doesNotContain(a);
 
   }
 
@@ -486,6 +488,78 @@ public class ShapeMapTest {
     assertThat(m.get(a)).isEqualTo("Hello");
     assertThat(m.get(b)).isEqualTo("World");
     assertThat(m.get(c)).isNull();
+  }
+
+
+  @Test
+  public void remove_then_add() throws Exception {
+
+    ShapeMap<String> m = new ShapeMap<>(String.class,
+      "a", "a",
+      "b", "b");
+
+    assertThat(m.keySet().contains(ShapeKey.get("a"))).isTrue();
+    assertThat(m.keySet().contains(ShapeKey.get("b"))).isTrue();
+
+    m.removes("a");
+    assertThat(m.keySet().contains(ShapeKey.get("a"))).isFalse();
+    m.removes("b");
+    assertThat(m.keySet().contains(ShapeKey.get("b"))).isFalse();
+
+    m.sets("a", "a");
+    m.puts("b", "b");
+
+    assertThat(m.keySet().contains(ShapeKey.get("a"))).isTrue();
+    assertThat(m.keySet().contains(ShapeKey.get("b"))).isTrue();
+    assertThat(m.keySet().contains(ShapeKey.get("a"))).isTrue();
+    assertThat(m.gets("a")).isEqualTo("a");
+    assertThat(m.gets("b")).isEqualTo("b");
+
 
   }
+
+  @Test
+  public void maintains_keys_in_insertion_order() throws Exception {
+
+    ShapeMap<String> m = new ShapeMap<>(String.class,
+      "a", "",
+      "b", "",
+      "c", "",
+      "d", "",
+      "e", "",
+      "f", "");
+
+    ArrayList<ShapeKey> keys = new ArrayList<>(m.keySet());
+
+    assertThat(keys.get(0)).isEqualTo(ShapeKey.get("a"));
+    assertThat(keys.get(1)).isEqualTo(ShapeKey.get("b"));
+    assertThat(keys.get(2)).isEqualTo(ShapeKey.get("c"));
+    assertThat(keys.get(3)).isEqualTo(ShapeKey.get("d"));
+    assertThat(keys.get(4)).isEqualTo(ShapeKey.get("e"));
+    assertThat(keys.get(5)).isEqualTo(ShapeKey.get("f"));
+
+    // remove a key from the middle and re-test
+    m.removes("c");
+    keys = new ArrayList<>(m.keySet());
+
+    assertThat(keys.get(0)).isEqualTo(ShapeKey.get("a"));
+    assertThat(keys.get(1)).isEqualTo(ShapeKey.get("b"));
+    assertThat(keys.get(2)).isEqualTo(ShapeKey.get("d"));
+    assertThat(keys.get(3)).isEqualTo(ShapeKey.get("e"));
+    assertThat(keys.get(4)).isEqualTo(ShapeKey.get("f"));
+
+    // add a key and re-test
+    m.sets("c", "");
+    keys = new ArrayList<>(m.keySet());
+
+    assertThat(keys.get(0)).isEqualTo(ShapeKey.get("a"));
+    assertThat(keys.get(1)).isEqualTo(ShapeKey.get("b"));
+    assertThat(keys.get(2)).isEqualTo(ShapeKey.get("d"));
+    assertThat(keys.get(3)).isEqualTo(ShapeKey.get("e"));
+    assertThat(keys.get(4)).isEqualTo(ShapeKey.get("f"));
+    assertThat(keys.get(5)).isEqualTo(ShapeKey.get("c"));
+
+  }
+
+
 }

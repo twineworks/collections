@@ -31,10 +31,10 @@ public class ShapeMap<T> implements Map<ShapeKey, T>, Cloneable {
 
   public Shape shape;
   public Object[] storage = null;
-  public final HashSet<ShapeKey> keys;
+  public final LinkedHashSet<ShapeKey> keys;
 
   public ShapeMap(){
-    keys = new HashSet<>();
+    keys = new LinkedHashSet<>();
     shape = Shapes.forKeySet(Collections.<ShapeKey>emptySet());
     shape.init(this);
   }
@@ -43,18 +43,18 @@ public class ShapeMap<T> implements Map<ShapeKey, T>, Cloneable {
   public ShapeMap(ShapeMap input){
     shape = input.shape;
     storage = Arrays.copyOf(input.storage, input.storage.length);
-    keys = (HashSet<ShapeKey>) input.keys.clone();
+    keys = (LinkedHashSet<ShapeKey>) input.keys.clone();
   }
 
-  public ShapeMap(Set<ShapeKey> keys){
-    shape = Shapes.forKeySet(keys);
-    this.keys = new HashSet<>();
+  public ShapeMap(Collection<ShapeKey> keys){
+    shape = Shapes.forKeys(keys);
+    this.keys = new LinkedHashSet<>();
     this.keys.addAll(keys);
     shape.init(this);
   }
 
   public ShapeMap(Map<String, ? extends T> map){
-    this.keys = new HashSet<>();
+    this.keys = new LinkedHashSet<>();
     Set<String> strKeys = map.keySet();
     for (String strKey : strKeys) {
       this.keys.add(ShapeKey.get(strKey));
@@ -70,7 +70,7 @@ public class ShapeMap<T> implements Map<ShapeKey, T>, Cloneable {
   }
 
   public ShapeMap(ShapeKey... keys){
-    this.keys = new HashSet<>();
+    this.keys = new LinkedHashSet<>();
     Collections.addAll(this.keys, keys);
 
     shape = Shapes.forKeySet(this.keys);
@@ -111,7 +111,7 @@ public class ShapeMap<T> implements Map<ShapeKey, T>, Cloneable {
 
     }
 
-    this.keys = new HashSet<>(keys);
+    this.keys = new LinkedHashSet<>(keys);
 
     shape = Shapes.forKeySet(this.keys);
     shape.init(this);
@@ -232,12 +232,12 @@ public class ShapeMap<T> implements Map<ShapeKey, T>, Cloneable {
   @SuppressWarnings("unchecked")
   public T remove(Object key) {
 
-    // removes the key from keyset, does not change the shape
     ShapeKey k = (ShapeKey) key;
     if (keys.remove(k)){
       int idx = shape.idxFor(k);
       T v = (T) storage[idx];
       storage[idx] = null;
+      shape = Shapes.shrinkBy(shape, k);
       return v;
     }
 
@@ -278,12 +278,13 @@ public class ShapeMap<T> implements Map<ShapeKey, T>, Cloneable {
   private void clearKeyData(ShapeKey k){
     int idx = shape.idxFor(k);
     storage[idx] = null;
+    shape = Shapes.shrinkBy(shape, k);
   }
 
   @Override
   public void putAll(Map<? extends ShapeKey, ? extends T> m) {
 
-    HashSet<ShapeKey> newKeys = new HashSet<>(m.keySet());
+    LinkedHashSet<ShapeKey> newKeys = new LinkedHashSet<>(m.keySet());
     keys.addAll(newKeys);
     shape = shape.extendBy(newKeys);
     shape.ensureCapacity(this);
@@ -305,6 +306,7 @@ public class ShapeMap<T> implements Map<ShapeKey, T>, Cloneable {
     // just clears the keys and values, does not change the shape
     Arrays.fill(storage, null);
     keys.clear();
+    shape = Shapes.forKeySet(Collections.<ShapeKey>emptySet());
 
   }
 

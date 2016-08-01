@@ -103,7 +103,7 @@ class ShapeN implements Shape {
     if (shape != null) return shape;
 
     // no existing transition available, copy shape and add keys to the copy,
-    // keeping the existing indexes as they are
+    // keeping existing indexes as they are
     HashMap<ShapeKey, Integer> newKeyIntMap = (HashMap<ShapeKey, Integer>) keyIntMap.clone();
 
     int idx = keys.size()+1;
@@ -111,6 +111,38 @@ class ShapeN implements Shape {
       if (!newKeyIntMap.containsKey(newKey)){
         newKeyIntMap.put(newKey, idx);
         idx += 1;
+      }
+    }
+
+    Shape newShape = new ShapeN(toKeys, newKeyIntMap);
+    transitions.put(toKeys, newShape);
+    return newShape;
+
+  }
+
+
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public synchronized Shape shrinkBy(Set<ShapeKey> byKeys) {
+
+    // byKeys -> keys to remove from existing
+    // toKeys -> new set of all keys in shape
+
+    HashSet<ShapeKey> toKeys = (HashSet<ShapeKey>) keys.clone();
+    toKeys.removeAll(byKeys);
+
+    // existing transition available?
+    Shape shape = transitions.get(toKeys);
+    if (shape != null) return shape;
+
+    // no existing transition available, copy shape and skip keys in the copy,
+    // keeping existing indexes as they are
+    HashMap<ShapeKey, Integer> newKeyIntMap = (HashMap<ShapeKey, Integer>) keyIntMap.clone();
+
+    for(ShapeKey rmKey : byKeys){
+      if (newKeyIntMap.containsKey(rmKey)){
+        newKeyIntMap.remove(rmKey);
       }
     }
 

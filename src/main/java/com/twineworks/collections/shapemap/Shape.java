@@ -39,6 +39,9 @@ interface Shape {
   // create another shape by adding given keys
   Shape extendBy(Set<ShapeKey> byKeys);
 
+  // create another shape by removing given keys
+  Shape shrinkBy(Set<ShapeKey> byKeys);
+
   // returns which keys are in the shape
   Set<ShapeKey> keySet();
 

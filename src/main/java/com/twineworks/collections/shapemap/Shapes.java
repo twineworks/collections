@@ -27,6 +27,7 @@ package com.twineworks.collections.shapemap;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -70,6 +71,11 @@ class Shapes {
     return intern(keys);
   }
 
+  public static Shape forKeys(Collection<ShapeKey> keys){
+    return intern(new HashSet<>(keys));
+  }
+
+
   public static Shape extendBy(Shape s, Set<ShapeKey> keys){
     return s.extendBy(keys);
   }
@@ -79,5 +85,12 @@ class Shapes {
     return extendBy(s, changeSet);
   }
 
+  public static Shape shrinkBy(Shape s, Set<ShapeKey> keys){
+    return s.shrinkBy(keys);
+  }
 
+  public static Shape shrinkBy(Shape s, ShapeKey key){
+    Set<ShapeKey> changeSet = Collections.singleton(key);
+    return shrinkBy(s, changeSet);
+  }
 }
