@@ -296,6 +296,14 @@ public class ShapeMap<T> implements Map<ShapeKey, T>, Cloneable {
 
   }
 
+  public void addKeys(Collection<ShapeKey> newKeys) {
+
+    keys.addAll(newKeys);
+    shape = shape.extendBy(keys);
+    shape.ensureCapacity(this);
+
+  }
+
   public void extendShape(Set<ShapeKey> newKeys){
     shape = shape.extendBy(newKeys);
     shape.ensureCapacity(this);
