@@ -26,7 +26,7 @@ package com.twineworks.collections.shapemap;
 
 import java.util.Set;
 
-interface Shape {
+public interface Shape {
 
   // initialize storage
   void init(ShapeMap m);

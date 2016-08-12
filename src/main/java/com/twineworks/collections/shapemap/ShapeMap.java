@@ -31,18 +31,21 @@ public class ShapeMap<T> implements Map<ShapeKey, T>, Cloneable {
 
   public Shape shape;
   public Object[] storage = null;
+  public ShapeKey[] presence = null;
   public final LinkedHashSet<ShapeKey> keys;
 
   public ShapeMap(){
     keys = new LinkedHashSet<>();
     shape = Shapes.forKeySet(Collections.<ShapeKey>emptySet());
     shape.init(this);
+
   }
 
   @SuppressWarnings("unchecked")
   public ShapeMap(ShapeMap input){
     shape = input.shape;
     storage = Arrays.copyOf(input.storage, input.storage.length);
+    presence = Arrays.copyOf(input.presence, input.presence.length);
     keys = (LinkedHashSet<ShapeKey>) input.keys.clone();
   }
 
@@ -51,6 +54,9 @@ public class ShapeMap<T> implements Map<ShapeKey, T>, Cloneable {
     this.keys = new LinkedHashSet<>();
     this.keys.addAll(keys);
     shape.init(this);
+    for (ShapeKey key : keys) {
+      presence[shape.idxFor(key)] = key;
+    }
   }
 
   public ShapeMap(Map<String, ? extends T> map){
@@ -64,7 +70,9 @@ public class ShapeMap<T> implements Map<ShapeKey, T>, Cloneable {
     shape.init(this);
 
     for (ShapeKey key : keys) {
-      storage[shape.idxFor(key)] = map.get(key.toString());
+      int idx = shape.idxFor(key);
+      storage[idx] = map.get(key.toString());
+      presence[idx] = key;
     }
 
   }
@@ -75,6 +83,10 @@ public class ShapeMap<T> implements Map<ShapeKey, T>, Cloneable {
 
     shape = Shapes.forKeySet(this.keys);
     shape.init(this);
+    for (ShapeKey key : keys) {
+      presence[shape.idxFor(key)] = key;
+    }
+
   }
 
   // convenience constructor useful for tests
@@ -118,7 +130,9 @@ public class ShapeMap<T> implements Map<ShapeKey, T>, Cloneable {
 
     for (int i = 0; i < keys.size(); i++) {
       ShapeKey key = keys.get(i);
-      storage[shape.idxFor(key)] = values.get(i);
+      int idx = shape.idxFor(key);
+      storage[idx] = values.get(i);
+      presence[idx] = key;
     }
 
   }
@@ -171,7 +185,8 @@ public class ShapeMap<T> implements Map<ShapeKey, T>, Cloneable {
   @Override
   @SuppressWarnings("unchecked")
   public T get(Object key) {
-    return (T) storage[shape.idxFor((ShapeKey)key)];
+    int idx = shape.idxFor((ShapeKey)key);
+    return (T) presence[idx] != null ? (T) storage[idx] : null;
   }
 
   // convenience method if performance is not an issue
@@ -207,6 +222,10 @@ public class ShapeMap<T> implements Map<ShapeKey, T>, Cloneable {
 
     int idx = shape.idxFor(key);
     if (idx > 0){
+      if (presence[idx] == null){
+        keys.add(key);
+        presence[idx] = key;
+      }
       T prev = (T) storage[idx];
       storage[idx] = value;
       return prev;
@@ -217,6 +236,7 @@ public class ShapeMap<T> implements Map<ShapeKey, T>, Cloneable {
       keys.add(key);
       idx = shape.idxFor(key);
       storage[idx] = value;
+      presence[idx] = key;
       return null;
     }
 
@@ -237,7 +257,8 @@ public class ShapeMap<T> implements Map<ShapeKey, T>, Cloneable {
       int idx = shape.idxFor(k);
       T v = (T) storage[idx];
       storage[idx] = null;
-      shape = Shapes.shrinkBy(shape, k);
+//      shape = Shapes.shrinkBy(shape, k);
+      presence[idx] = null;
       return v;
     }
 
@@ -252,6 +273,10 @@ public class ShapeMap<T> implements Map<ShapeKey, T>, Cloneable {
 
     int idx = shape.idxFor(key);
     if (idx > 0){
+      if (presence[idx] == null){
+        keys.add(key);
+        presence[idx] = key;
+      }
       storage[idx] = value;
     }
     else{
@@ -260,6 +285,7 @@ public class ShapeMap<T> implements Map<ShapeKey, T>, Cloneable {
       keys.add(key);
       idx = shape.idxFor(key);
       storage[idx] = value;
+      presence[idx] = key;
     }
 
   }
@@ -278,7 +304,8 @@ public class ShapeMap<T> implements Map<ShapeKey, T>, Cloneable {
   private void clearKeyData(ShapeKey k){
     int idx = shape.idxFor(k);
     storage[idx] = null;
-    shape = Shapes.shrinkBy(shape, k);
+    presence[idx] = null;
+//    shape = Shapes.shrinkBy(shape, k);
   }
 
   @Override
@@ -291,7 +318,9 @@ public class ShapeMap<T> implements Map<ShapeKey, T>, Cloneable {
 
     for (ShapeKey key : newKeys) {
       Objects.requireNonNull(key);
-      storage[shape.idxFor(key)] = m.get(key);
+      int idx = shape.idxFor(key);
+      storage[idx] = m.get(key);
+      presence[idx] = key;
     }
 
   }
@@ -301,7 +330,9 @@ public class ShapeMap<T> implements Map<ShapeKey, T>, Cloneable {
     keys.addAll(newKeys);
     shape = shape.extendBy(keys);
     shape.ensureCapacity(this);
-
+    for (ShapeKey key : newKeys) {
+      presence[shape.idxFor(key)] = key;
+    }
   }
 
   public void extendShape(Set<ShapeKey> newKeys){
@@ -313,8 +344,9 @@ public class ShapeMap<T> implements Map<ShapeKey, T>, Cloneable {
   public void clear() {
     // just clears the keys and values, does not change the shape
     Arrays.fill(storage, null);
+    Arrays.fill(presence, null);
     keys.clear();
-    shape = Shapes.forKeySet(Collections.<ShapeKey>emptySet());
+    //shape = Shapes.forKeySet(Collections.<ShapeKey>emptySet());
 
   }
 
@@ -673,6 +705,7 @@ public class ShapeMap<T> implements Map<ShapeKey, T>, Cloneable {
       m.shape = newShape;
       m.keys.add(k);
       newShape.ensureCapacity(m);
+      m.presence[newShape.idxFor(k)] = k;
       return newShape;
     }
 

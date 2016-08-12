@@ -61,7 +61,7 @@ public class ShapeMapTest {
     m.put(a, "foo");
     m.removes("a");
     assertThat(m.get(a)).isNull();
-    assertThat(m.shape.keySet()).doesNotContain(ShapeKey.get("a"));
+    assertThat(m).doesNotContainKey(a);
   }
 
   @Test
@@ -394,7 +394,7 @@ public class ShapeMapTest {
   }
 
   @Test
-  public void removing_mapping_by_entry_set_iterator_remove_nulls_storage_and_shrinks_shape() throws Exception {
+  public void removing_mapping_by_entry_set_iterator_remove_nulls_storage_and_retains_shape() throws Exception {
 
     ShapeMap<String> m = new ShapeMap<>();
     m.put(a, "foo");
@@ -406,12 +406,13 @@ public class ShapeMapTest {
     iterator.next();
     iterator.remove();
     assertThat(m.storage[idx]).isNull();
-    assertThat(m.shape.keySet()).doesNotContain(a);
+    assertThat(m).doesNotContainKey(a);
+    assertThat(m.shape.keySet()).contains(a);
 
   }
 
   @Test
-  public void removing_mapping_by_value_collection_remove_nulls_storage_and_shrinks_shape() throws Exception {
+  public void removing_mapping_by_value_collection_remove_nulls_storage_and_retains_shape() throws Exception {
 
     ShapeMap<String> m = new ShapeMap<>();
     m.put(a, "foo");
@@ -421,12 +422,13 @@ public class ShapeMapTest {
     // remove, verify storage is null
     m.values().remove("foo");
     assertThat(m.storage[idx]).isNull();
-    assertThat(m.shape.keySet()).doesNotContain(a);
+    assertThat(m.keySet()).doesNotContain(a);
+    assertThat(m.shape.keySet()).contains(a);
 
   }
 
   @Test
-  public void removing_mapping_by_value_collection_iterator_remove_nulls_storage_and_shrinks_shape() throws Exception {
+  public void removing_mapping_by_value_collection_iterator_remove_nulls_storage_and_retains_shape() throws Exception {
 
     ShapeMap<String> m = new ShapeMap<>();
     m.put(a, "foo");
@@ -438,12 +440,13 @@ public class ShapeMapTest {
     iterator.next();
     iterator.remove();
     assertThat(m.storage[idx]).isNull();
-    assertThat(m.shape.keySet()).doesNotContain(a);
+    assertThat(m.keySet()).doesNotContain(a);
+    assertThat(m.shape.keySet()).contains(a);
 
   }
 
   @Test
-  public void clear_nulls_storage_and_shrinks_shape() throws Exception {
+  public void clear_nulls_storage_and_retains_shape() throws Exception {
 
     ShapeMap<String> m = new ShapeMap<>();
     m.put(a, "foo");
@@ -453,7 +456,8 @@ public class ShapeMapTest {
     // clear, verify storage is null
     m.clear();
     assertThat(m.storage[idx]).isNull();
-    assertThat(m.shape.keySet()).doesNotContain(a);
+    assertThat(m).doesNotContainKey(a);
+    assertThat(m.shape.keySet()).contains(a);
 
   }
 

@@ -66,6 +66,7 @@ class ShapeN implements Shape {
   @Override
   public void init(ShapeMap m) {
     m.storage = new Object[(keys.size()+1)*2];
+    m.presence = new ShapeKey[(keys.size()+1)*2];
   }
 
   @Override
@@ -74,11 +75,16 @@ class ShapeN implements Shape {
     int targetLen = keys.size()+1;
     int currentLen = m.storage.length;
     Object[] s = m.storage;
+    Object[] p = m.presence;
 
     if (currentLen < targetLen){
       Object[] a = new Object[targetLen*2];
       System.arraycopy(s, 0, a, 0, s.length);
       m.storage = a;
+
+      ShapeKey[] b = new ShapeKey[targetLen*2];
+      System.arraycopy(p, 0, b, 0, p.length);
+      m.presence = b;
     }
 
   }
