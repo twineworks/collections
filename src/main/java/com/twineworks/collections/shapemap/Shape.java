@@ -48,4 +48,5 @@ public interface Shape {
   // the amount of keys the shape holds
   int size();
 
+  void initConst(ConstShapeMap shapeMap);
 }

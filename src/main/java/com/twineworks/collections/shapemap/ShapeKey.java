@@ -27,6 +27,7 @@ package com.twineworks.collections.shapemap;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -78,6 +79,15 @@ public class ShapeKey {
 
   public static Set<ShapeKey> getAll(String ... symbols){
     HashSet<ShapeKey> keys = new HashSet<>(symbols.length);
+    for (String sym : symbols) {
+      keys.add(get(sym));
+    }
+
+    return keys;
+  }
+
+  public static Set<ShapeKey> getAll(Collection<String> symbols){
+    HashSet<ShapeKey> keys = new HashSet<>(symbols.size());
     for (String sym : symbols) {
       keys.add(get(sym));
     }

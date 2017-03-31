@@ -95,6 +95,11 @@ class ShapeN implements Shape {
   }
 
   @Override
+  public void initConst(ConstShapeMap m) {
+    m.storage = new Object[(keys.size()+1)];
+  }
+
+  @Override
   @SuppressWarnings("unchecked")
   public synchronized Shape extendBy(Set<ShapeKey> byKeys) {
 
