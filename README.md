@@ -127,10 +127,4 @@ Please note that the order in which keys are added is important:
 `[] -> [k1] -> [k1, k2]` is not the same shape as `[] -> [k2] -> [k2, k1]`. The key sets are identical, but in the indexes
  of storage are different.
 
-## Benchmarks
 
-The [benchmarks](benchmarks) folder contains a basic [JMH](http://openjdk.java.net/projects/code-tools/jmh/) micro-benchmark project. The benchmarks build maps of various sizes and perform basic read and write operations. In case of the ShapeMap the benchmarks also read/write using an effective accessor, as well as an entirely ineffective one, which has been trained on four shapes irrelevant to the benchmarked map and needs to fall back on generic lookup.
-
-Here's the basic result for all benchmarks against the JDK 8 HashMap, measuring access time for reading/writing a single key in ns,  so lower is better.
-
-![BenchmarkResults](benchmarks/images/performance_chart.png)
