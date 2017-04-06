@@ -566,18 +566,10 @@ public class ConstShapeMap<T> implements Cloneable {
       if (s == shape1){
         return (T) storage[idx1];
       }
-      else if (s == shape2){
-        return (T) storage[idx2];
-      }
       else if (shape1 == null){
         shape1 = s;
         idx1 = s.idxFor(k);
         return (T) storage[idx1];
-      }
-      else if (shape2 == null){
-        shape2 = s;
-        idx2 = s.idxFor(k);
-        return (T) storage[idx2];
       }
       else{
         return (T) storage[s.idxFor(k)];
@@ -597,25 +589,11 @@ public class ConstShapeMap<T> implements Cloneable {
         return o;
       }
 
-      if (s == shape2){
-        T o = (T) storage[idx2];
-        storage[idx2] = v;
-        return o;
-      }
-
       if (shape1 == null){
         shape1 = shapeMap.shape;
         idx1 = shape1.idxFor(k);
         T o = (T) shapeMap.storage[idx1];
         shapeMap.storage[idx1] = v;
-        return o;
-      }
-
-      if (shape2 == null){
-        shape2 = shapeMap.shape;
-        idx2 = shape2.idxFor(k);
-        T o = (T) shapeMap.storage[idx2];
-        shapeMap.storage[idx2] = v;
         return o;
       }
 
@@ -652,13 +630,6 @@ public class ConstShapeMap<T> implements Cloneable {
         shape1 = shapeMap.shape;
         idx1 = shape1.idxFor(k);
         shapeMap.storage[idx1] = v;
-        return;
-      }
-
-      if (shape2 == null){
-        shape2 = shapeMap.shape;
-        idx2 = shape2.idxFor(k);
-        shapeMap.storage[idx2] = v;
         return;
       }
 
