@@ -41,7 +41,6 @@ public class ConstShapeMap<T> implements Cloneable {
   public ConstShapeMap(ConstShapeMap input){
     shape = input.shape;
     Object[] src = input.storage;
-//    this.storage = Arrays.copyOf(src, src.length);
     this.storage = new Object[src.length];
     System.arraycopy(src, 0, this.storage, 0, src.length);
   }
@@ -244,6 +243,7 @@ public class ConstShapeMap<T> implements Cloneable {
   public void sets(String key, T value){
     set(ShapeKey.get(key), value);
   }
+
   // convenience method if performance is not an issue
   // converts given key to ShapeKey and calls remove
   public T removes(String key){
@@ -548,10 +548,8 @@ public class ConstShapeMap<T> implements Cloneable {
 
     private final ShapeKey k;
     private Shape shape1;
-    private Shape shape2;
 
     private int idx1 = 0;
-    private int idx2 = 0;
 
     public PolymorphicAccessor(ShapeKey k) {
       this.k = k;
@@ -618,11 +616,6 @@ public class ConstShapeMap<T> implements Cloneable {
 
       if (s == shape1){
         storage[idx1] = v;
-        return;
-      }
-
-      if (s == shape2){
-        storage[idx2] = v;
         return;
       }
 
