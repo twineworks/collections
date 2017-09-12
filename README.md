@@ -55,7 +55,7 @@ ShapeMap<String> m = new ShapeMap<>();
 ak.set(m, "my_value");
 String v = ak.get(m);
 ```
-A small additional performance tweak is a `set()` method in addition to the regular `put()`. The set method does not return any previous value. The performance gain is marginal but noticeable, check the benchmark for details.
+A small additional performance tweak is a `set()` method in addition to the regular `put()`. The set method does not return any previous value.
 
 It is perfectly safe to use the same accessor for different maps. The accessor is maximally effective if it is used on maps with up to four distinct shapes.
 
@@ -127,4 +127,21 @@ Please note that the order in which keys are added is important:
 `[] -> [k1] -> [k1, k2]` is not the same shape as `[] -> [k2] -> [k2, k1]`. The key sets are identical, but in the indexes
  of storage are different.
 
+## ConstShapeMaps
+
+ConstShapeMaps are like ShapeMaps whose shape can never change after construction. They are
+useful as records, when the record structure is fixed, but only known at runtime. 
+
+ConstShapeMaps differ from regular ShapeMaps in the following ways:
+  - Attempts to change the shape in any way throw runtime exceptions.
+  - All shape keys are present as keys. There is no separate tracking of shape and keyset.
+  - If a key is not set, its value is null.
+  - There is no insertion order of keys, therefore key order is not defined.
+  - They do not implement the java.util.Map interface.
+  
+## Batches
+
+Batches are array-backed non-synchronized high performance FIFO queues. They are useful for passing batches of
+records between consumers and producers that must be processed in order, producers and consumers are giving it
+a single pass to fill and consume the whole batch.
 
