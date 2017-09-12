@@ -2,18 +2,12 @@
 
 [![Java 7+](https://img.shields.io/badge/java-7+-4c7e9f.svg)](http://java.oracle.com)
 [![License](https://img.shields.io/badge/license-MIT-4c7e9f.svg)](https://raw.githubusercontent.com/twineworks/collections/master/LICENSE.txt)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.twineworks/collections/badge.svg)](http://search.maven.org/#search|gav|1|g:"com.twineworks"%20AND%20a:"collections")
 [![Travis Build Status](https://travis-ci.org/twineworks/collections.svg?branch=master)](https://travis-ci.org/twineworks/collections)
 [![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/ab9agcx66pw4rjt2/branch/master?svg=true)](https://ci.appveyor.com/project/slawo-ch/collections/branch/master)
 
 ## Getting the jar
-You can grab the jar from the [relases page](https://github.com/twineworks/collections/releases), or use a maven dependency:
-```xml
-<dependency>
-  <groupId>com.twineworks</groupId>
-  <artifactId>collections</artifactId>
-  <version>1.0.0</version>
-</dependency>
-``` 
+You can grab the jar from the [relases page](https://github.com/twineworks/collections/releases), or [maven central](http://search.maven.org/#search|gav|1|g:"com.twineworks"%20AND%20a:"collections"). 
 
 ## ShapeMaps
 ShapeMaps are high performance maps similar to HashMaps.
