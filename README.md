@@ -1,4 +1,9 @@
-# Twineworks collections for Java
+# Special purpose collections for Java
+
+[![Java 7+](https://img.shields.io/badge/java-7+-4c7e9f.svg)](http://java.oracle.com)
+[![License](https://img.shields.io/badge/license-MIT-4c7e9f.svg)](https://raw.githubusercontent.com/twineworks/collections/master/LICENSE.txt)
+[![Travis Build Status](https://travis-ci.org/twineworks/collections.svg?branch=master)](https://travis-ci.org/twineworks/collections)
+[![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/ab9agcx66pw4rjt2/branch/master?svg=true)](https://ci.appveyor.com/project/slawo-ch/collections/branch/master)
 
 ## ShapeMaps
 ShapeMaps are high performance maps similar to HashMaps.
