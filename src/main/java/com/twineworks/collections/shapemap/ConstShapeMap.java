@@ -26,7 +26,15 @@ THE SOFTWARE.
 package com.twineworks.collections.shapemap;
 
 import java.util.*;
-
+/**
+ *  A shape map whose shape can never change after construction.
+ *
+ *  It differs from regular ShapeMaps in the following ways:
+ *  - Attempts to change the shape in any way throw runtime exceptions.
+ *  - All shape keys are present as keys. There is no separate tracking of shape and keyset.
+ *  - If a key is not set, its value is null.
+ *  - There is no insertion order of keys, therefore key order is not defined.
+ */
 public class ConstShapeMap<T> implements Cloneable {
 
   public Shape shape;
@@ -262,66 +270,7 @@ public class ConstShapeMap<T> implements Cloneable {
   }
 
   public Set<ShapeKey> keySet() {
-    return new AbstractSet<ShapeKey>() {
-
-      @Override
-      public Iterator<ShapeKey> iterator() {
-        return new Iterator<ShapeKey>() {
-
-          private Iterator<ShapeKey> keyIterator = ConstShapeMap.this.shape.keySet().iterator();
-          private ShapeKey k = null;
-
-          @Override
-          public boolean hasNext() {
-            return keyIterator.hasNext();
-          }
-
-          @Override
-          public ShapeKey next() {
-            k = keyIterator.next();
-            return k;
-          }
-
-          @Override
-          public void remove() {
-            if (k == null){
-                throw new IllegalStateException("No item to remove. You did not call .next() or you've called .remove() more than once");
-            }
-            keyIterator.remove();
-            ConstShapeMap.this.clearKeyData(k);
-            k = null;
-          }
-        };
-      }
-
-      @Override
-      public int size() {
-          return ConstShapeMap.this.keySet().size();
-      }
-
-      @Override
-      public boolean removeAll(Collection<?> c) {
-        Objects.requireNonNull(c);
-        return super.removeAll(c);
-      }
-
-      @Override
-      public boolean addAll(Collection<? extends ShapeKey> c) {
-        Objects.requireNonNull(c);
-        return super.addAll(c);
-      }
-
-      @Override
-      public boolean retainAll(Collection<?> c) {
-        Objects.requireNonNull(c);
-        return super.retainAll(c);
-      }
-
-      @Override
-      public boolean contains(Object o) {
-        return ConstShapeMap.this.keySet().contains(o);
-      }
-    };
+    return Collections.unmodifiableSet(shape.keySet());
   }
 
   public Collection<T> values() {
@@ -353,7 +302,6 @@ public class ConstShapeMap<T> implements Cloneable {
               throw new IllegalStateException("No item to remove. You did not call .next() or you've called .remove() more than once");
             }
 
-            keyIterator.remove();
             ConstShapeMap.this.clearKeyData(k);
             k = null;
           }
@@ -388,7 +336,7 @@ public class ConstShapeMap<T> implements Cloneable {
 
   public Set<Map.Entry<ShapeKey, T>> entrySet() {
 
-    return new AbstractSet<Map.Entry<ShapeKey, T>>(){
+    return Collections.unmodifiableSet(new AbstractSet<Map.Entry<ShapeKey, T>>(){
       @Override
       public int size() {
         return ConstShapeMap.this.size();
@@ -495,7 +443,7 @@ public class ConstShapeMap<T> implements Cloneable {
       public void clear() {
         ConstShapeMap.this.clear();
       }
-    };
+    });
 
   }
 
