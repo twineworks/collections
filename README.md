@@ -5,10 +5,20 @@
 [![Travis Build Status](https://travis-ci.org/twineworks/collections.svg?branch=master)](https://travis-ci.org/twineworks/collections)
 [![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/ab9agcx66pw4rjt2/branch/master?svg=true)](https://ci.appveyor.com/project/slawo-ch/collections/branch/master)
 
+## Getting the jar
+You can grab the jar from the [relases page](https://github.com/twineworks/collections/releases), or use a maven dependency:
+```xml
+<dependency>
+  <groupId>com.twineworks</groupId>
+  <artifactId>collections</artifactId>
+  <version>1.0.0</version>
+</dependency>
+``` 
+
 ## ShapeMaps
 ShapeMaps are high performance maps similar to HashMaps.
 
- * They implement the standard Map interface of java collections.
+ * They implement the standard Map interface of Java collections.
  * They _do not_ allow `null` keys.
  * They _do_ allow `null` values.
  * Like HashMaps, they are not thread-safe. You need to provide your own synchronization.
@@ -150,3 +160,8 @@ Batches are array-backed non-synchronized high performance FIFO queues. They are
 records between consumers and producers that must be processed in order, producers and consumers are giving it
 a single pass to fill and consume the whole batch.
 
+## License
+This project uses the business friendly [MIT](https://opensource.org/licenses/MIT) license.
+
+## Support
+Open source does not mean you're on your own. This project is developed by [Twineworks GmbH](http://twineworks.com). Twineworks offers commercial support and consulting services. [Contact us](mailto:hi@twineworks.com) if you'd like us to help with a project.
