@@ -72,7 +72,7 @@ public class Batch<E> {
   }
 
   public boolean isEmpty() {
-    return idx == 0 && consumeIdx == 0;
+    return idx == 0;
   }
 
   public void clear(){

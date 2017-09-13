@@ -92,27 +92,40 @@ public class BatchTest {
   public void can_interleave_add_and_remove() throws Exception {
     Batch<Object> batch = new Batch<>(3);
     batch.add(0L);
+    assertThat(batch.isEmpty()).isFalse();
+
     batch.add(1L);
     batch.add(2L);
 
+
     assertThat(batch.remove()).isEqualTo(0L);
     assertThat(batch.remove()).isEqualTo(1L);
+    assertThat(batch.isEmpty()).isFalse();
+
     assertThat(batch.remove()).isEqualTo(2L);
+    assertThat(batch.isEmpty()).isTrue();
 
     batch.add(0L);
+    assertThat(batch.isEmpty()).isFalse();
     assertThat(batch.remove()).isEqualTo(0L);
+    assertThat(batch.isEmpty()).isTrue();
 
     batch.add(1L);
+    assertThat(batch.isEmpty()).isFalse();
     assertThat(batch.remove()).isEqualTo(1L);
+    assertThat(batch.isEmpty()).isTrue();
 
     batch.add(2L);
+    assertThat(batch.isEmpty()).isFalse();
     assertThat(batch.remove()).isEqualTo(2L);
+    assertThat(batch.isEmpty()).isTrue();
 
     batch.add(0L);
     batch.add(1L);
+    assertThat(batch.isEmpty()).isFalse();
     assertThat(batch.remove()).isEqualTo(0L);
+    assertThat(batch.isEmpty()).isFalse();
     assertThat(batch.remove()).isEqualTo(1L);
-
     assertThat(batch.isEmpty()).isTrue();
 
   }
