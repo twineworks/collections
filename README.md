@@ -154,6 +154,11 @@ Batches are array-backed non-synchronized high performance FIFO queues. They are
 records between consumers and producers that must be processed in order, producers and consumers are giving it
 a single pass to fill and consume the whole batch.
 
+## TrieLists
+
+TrieLists are a persistent vector implementation based on a tree of 6 bit (64-item) Trie nodes with 
+tail operation optimization.   
+
 ## License
 This project uses the business friendly [MIT](https://opensource.org/licenses/MIT) license.
 
