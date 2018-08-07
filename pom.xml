@@ -31,11 +31,30 @@
     <groupId>com.twineworks</groupId>
     <artifactId>collections</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.1.0</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Special purpose collections for Java.</description>
     <url>https://github.com/twineworks/collections</url>
+
+    <!--
+    Making a release:
+    - ensure pom.xml contains SNAPSHOT version
+    - ensure the snapshot release is successful
+      $ mvn clean deploy
+    - ensure pom.xml contains release version
+    - commit pom
+    - deploy release version
+      $ mvn clean deploy -P release
+    - tag release version
+    - ensure pom.xml contains next SNAPSHOT version
+    - commit
+    - upload jar as github release
+
+    Details on release process to sonatype:
+    https://central.sonatype.org/pages/apache-maven.html
+
+-->
 
     <licenses>
         <license>
@@ -151,6 +170,7 @@
                 </configuration>
             </plugin>
 
+            <!-- code coverage -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
