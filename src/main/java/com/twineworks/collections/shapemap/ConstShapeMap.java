@@ -513,8 +513,8 @@ public class ConstShapeMap<T> implements Cloneable {
         return (T) storage[idx1];
       }
       else if (shape1 == null){
-        shape1 = s;
         idx1 = s.idxFor(k);
+        shape1 = s;
         return (T) storage[idx1];
       }
       else{
@@ -536,8 +536,8 @@ public class ConstShapeMap<T> implements Cloneable {
       }
 
       if (shape1 == null){
-        shape1 = shapeMap.shape;
-        idx1 = shape1.idxFor(k);
+        idx1 = s.idxFor(k);
+        shape1 = s;
         T o = (T) shapeMap.storage[idx1];
         shapeMap.storage[idx1] = v;
         return o;
@@ -568,13 +568,13 @@ public class ConstShapeMap<T> implements Cloneable {
       }
 
       if (shape1 == null){
-        shape1 = shapeMap.shape;
-        idx1 = shape1.idxFor(k);
+        idx1 = s.idxFor(k);
+        shape1 = s;
         shapeMap.storage[idx1] = v;
         return;
       }
 
-      int idx = shapeMap.shape.idxFor(k);
+      int idx = s.idxFor(k);
       // key present?
       if (idx > 0) {
         shapeMap.storage[idx] = v;
