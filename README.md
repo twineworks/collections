@@ -1,6 +1,6 @@
 # Special purpose collections for Java
 
-[![Java 7+](https://img.shields.io/badge/java-7+-4c7e9f.svg)](http://java.oracle.com)
+[![Java 7+](https://img.shields.io/badge/java-8+-4c7e9f.svg)](http://java.oracle.com)
 [![License](https://img.shields.io/badge/license-MIT-4c7e9f.svg)](https://raw.githubusercontent.com/twineworks/collections/master/LICENSE.txt)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.twineworks/collections/badge.svg)](http://search.maven.org/#search|gav|1|g:"com.twineworks"%20AND%20a:"collections")
 [![Travis Build Status](https://travis-ci.org/twineworks/collections.svg?branch=master)](https://travis-ci.org/twineworks/collections)
@@ -16,7 +16,7 @@ ShapeMaps are high performance maps similar to HashMaps.
  * They _do not_ allow `null` keys.
  * They _do_ allow `null` values.
  * Like HashMaps, they are not thread-safe. You need to provide your own synchronization.
- * Compatible with Java 7 and above
+ * Compatible with Java 8 and above
 
 ShapeMaps implement a combination of the following performance optimization techniques:
 
@@ -159,6 +159,27 @@ a single pass to fill and consume the whole batch.
 TrieLists are a persistent vector implementation based on a tree of 6 bit (64-item) Trie nodes with 
 tail operation optimization.   
 
+## ChampMaps
+Trie-based persistent hash maps. 
+
+ * They _do not_ allow `null` keys.
+ * They _do not_ allow `null` values.
+
+See [Michael Steindorfer's Phd. thesis](https://michael.steindorfer.name/publications/phd-thesis-efficient-immutable-collections.pdf) on the CHAMP data structure.
+This implementation is based on the excellent implementation in the [capsule](https://github.com/usethesource/capsule) project. 
+
+Notable changes are: 
+ - mutable transients are not tied to a specific mutator thread, you can create deep copies of a transient to share with other threads via dup()
+ - equal values do not cause an update in compact bitmap nodes, the original item stays in the map
+ - set vs. put semantics in transients, previous value of a key is not returned 
+ - entry iteration is using standard JDK [AbstractMap.SimpleEntry](https://docs.oracle.com/javase/8/docs/api/java/util/AbstractMap.SimpleEntry.html)   
+ - transients implement remove()
+ - Always calls key.equals and value.equals for comparisons, custom equivalence tester is not supported
+ - minor changes removing 0-length array copies from the code
+ - recursive equality check on node array uses Arrays.equals()
+ - implementations of removeAll() for map and transient
+ - minor optimizations for implementations of setAll()
+ 
 ## License
 This project uses the business friendly [MIT](https://opensource.org/licenses/MIT) license.
 
