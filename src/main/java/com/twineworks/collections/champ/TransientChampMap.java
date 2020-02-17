@@ -127,6 +127,42 @@ public class TransientChampMap<K, V> {
     setAll(src.entrySet());
   }
 
+  public void setAll(K[] keys, V[] values){
+    if (!mutable.get()) {
+      throw new IllegalStateException("Transient already frozen.");
+    }
+
+    final UpdateResult<K, V> ur = UpdateResult.unchanged();
+
+    for (int i = 0; i < keys.length; i++) {
+      K key = keys[i];
+      V val = values[i];
+
+      final int keyHash = key.hashCode();
+
+      final ChampNode<K, V> newRootNode = rootNode.update(mutable, key, val, keyHash, 0, ur);
+
+      if (ur.isModified()) {
+        if (ur.hasReplacedValue()) {
+          final V old = ur.getReplacedValue();
+
+          final int valHashOld = old.hashCode();
+          final int valHashNew = val.hashCode();
+
+          rootNode = newRootNode;
+          cachedHashCode = cachedHashCode + (keyHash ^ valHashNew) - (keyHash ^ valHashOld);
+        } else {
+          final int valHashNew = val.hashCode();
+          rootNode = newRootNode;
+          cachedHashCode += (keyHash ^ valHashNew);
+          cachedSize += 1;
+        }
+        ur.reset();
+      }
+    }
+
+  }
+
   public void setAll(ChampMap<K, V> src) {
 
     if (!mutable.get()) {
